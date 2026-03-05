@@ -132,6 +132,37 @@ exports.Prisma.UserScalarFieldEnum = {
   credits: 'credits'
 };
 
+exports.Prisma.ProjectScalarFieldEnum = {
+  id: 'id',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  name: 'name',
+  repoUrl: 'repoUrl',
+  githubToken: 'githubToken',
+  deletedAt: 'deletedAt'
+};
+
+exports.Prisma.UserToProjectScalarFieldEnum = {
+  id: 'id',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  userId: 'userId',
+  projectId: 'projectId'
+};
+
+exports.Prisma.CommitScalarFieldEnum = {
+  id: 'id',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  commitHash: 'commitHash',
+  commitMessage: 'commitMessage',
+  commitAuthorName: 'commitAuthorName',
+  commitAuthorAvatar: 'commitAuthorAvatar',
+  commitDate: 'commitDate',
+  summary: 'summary',
+  projectId: 'projectId'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -149,7 +180,10 @@ exports.Prisma.NullsOrder = {
 
 
 exports.Prisma.ModelName = {
-  User: 'User'
+  User: 'User',
+  Project: 'Project',
+  UserToProject: 'UserToProject',
+  Commit: 'Commit'
 };
 
 /**

@@ -104,6 +104,37 @@ exports.Prisma.UserScalarFieldEnum = {
   credits: 'credits'
 };
 
+exports.Prisma.ProjectScalarFieldEnum = {
+  id: 'id',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  name: 'name',
+  repoUrl: 'repoUrl',
+  githubToken: 'githubToken',
+  deletedAt: 'deletedAt'
+};
+
+exports.Prisma.UserToProjectScalarFieldEnum = {
+  id: 'id',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  userId: 'userId',
+  projectId: 'projectId'
+};
+
+exports.Prisma.CommitScalarFieldEnum = {
+  id: 'id',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  commitHash: 'commitHash',
+  commitMessage: 'commitMessage',
+  commitAuthorName: 'commitAuthorName',
+  commitAuthorAvatar: 'commitAuthorAvatar',
+  commitDate: 'commitDate',
+  summary: 'summary',
+  projectId: 'projectId'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -121,7 +152,10 @@ exports.Prisma.NullsOrder = {
 
 
 exports.Prisma.ModelName = {
-  User: 'User'
+  User: 'User',
+  Project: 'Project',
+  UserToProject: 'UserToProject',
+  Commit: 'Commit'
 };
 /**
  * Create the Client
@@ -170,13 +204,13 @@ const config = {
       }
     }
   },
-  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\ngenerator client {\n  provider = \"prisma-client-js\"\n  output   = \"../generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel User {\n  id        String   @id @default(cuid())\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  imageUrl     String?\n  firstName    String?\n  lastName     String?\n  emailAddress String  @unique\n\n  credits Int @default(200)\n}\n",
-  "inlineSchemaHash": "e8aeaef5f3f0e73b574b3745af085f228bb921be53f06432f5636e4bd99ef26e",
+  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\ngenerator client {\n  provider = \"prisma-client-js\"\n  output   = \"../generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel User {\n  id        String   @id @default(cuid())\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  imageUrl     String?\n  firstName    String?\n  lastName     String?\n  emailAddress String  @unique\n\n  credits        Int             @default(200)\n  userToProjects UserToProject[]\n}\n\nmodel Project {\n  id        String   @id @default(cuid())\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  name        String\n  repoUrl     String\n  githubToken String?\n  deletedAt   DateTime?\n\n  userToProjects UserToProject[]\n\n  commits Commit[]\n}\n\nmodel UserToProject {\n  id        String   @id @default(cuid())\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  userId    String\n  projectId String\n\n  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)\n  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)\n\n  @@unique([userId, projectId])\n}\n\nmodel Commit {\n  id        String   @id @default(cuid())\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  commitHash         String\n  commitMessage      String\n  commitAuthorName   String\n  commitAuthorAvatar String\n  commitDate         DateTime\n  // AI summary of the commit message and code changes\n  summary            String\n  projectId          String\n\n  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)\n}\n",
+  "inlineSchemaHash": "51f4c035dccb76501ab61bddb277ce7adf803d3e277e7bf21312e251438644b6",
   "copyEngine": true
 }
 config.dirname = '/'
 
-config.runtimeDataModel = JSON.parse("{\"models\":{\"User\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"imageUrl\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"firstName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"lastName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"emailAddress\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"credits\",\"kind\":\"scalar\",\"type\":\"Int\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
+config.runtimeDataModel = JSON.parse("{\"models\":{\"User\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"imageUrl\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"firstName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"lastName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"emailAddress\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"credits\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"userToProjects\",\"kind\":\"object\",\"type\":\"UserToProject\",\"relationName\":\"UserToUserToProject\"}],\"dbName\":null},\"Project\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"repoUrl\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"githubToken\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"deletedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"userToProjects\",\"kind\":\"object\",\"type\":\"UserToProject\",\"relationName\":\"ProjectToUserToProject\"},{\"name\":\"commits\",\"kind\":\"object\",\"type\":\"Commit\",\"relationName\":\"CommitToProject\"}],\"dbName\":null},\"UserToProject\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"projectId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"UserToUserToProject\"},{\"name\":\"project\",\"kind\":\"object\",\"type\":\"Project\",\"relationName\":\"ProjectToUserToProject\"}],\"dbName\":null},\"Commit\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"commitHash\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"commitMessage\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"commitAuthorName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"commitAuthorAvatar\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"commitDate\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"summary\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"projectId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"project\",\"kind\":\"object\",\"type\":\"Project\",\"relationName\":\"CommitToProject\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
 defineDmmfProperty(exports.Prisma, config.runtimeDataModel)
 config.engineWasm = {
   getRuntime: async () => require('./query_engine_bg.js'),
